@@ -1,0 +1,64 @@
+{
+  "taskRoleArn": "arn:aws:iam::150117337249:role/ecsTaskRoleWithS3Access",
+  "executionRoleArn": "arn:aws:iam::150117337249:role/ecsTaskRoleWithS3Access",
+  "containerDefinitions": [
+    {
+      "name": "obrien-prod-api-service",
+      "image": "150117337249.dkr.ecr.ap-southeast-1.amazonaws.com/obrien-prod-repository:latest",
+      "cpu": 256,
+      "memory": 256,
+      "portMappings": [
+          {
+            "containerPort": 8000,
+            "hostPort": 0,
+            "protocol": "tcp"
+          }
+        ],
+      "essential": true,
+      "environment": [],
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::obrien-prod-envs/production.env",
+          "type": "s3"
+        }
+      ],
+      "mountPoints": [],
+      "volumesFrom": []
+    }
+  ],
+  "compatibilities": [
+    "EC2"
+  ],
+  "family": "obrien-prod-task-def",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.env-files.s3"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    }
+  ],
+  "placementConstraints": [],
+  "tags": [],
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "revision": 3,
+  "status": "ACTIVE",
+  "volumes": []
+}

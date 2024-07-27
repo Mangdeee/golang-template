@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    container_name: template_postgres_db
+    image: postgres:13-alpine
+    ports: 
+      - ${PG_PORT}:${PG_PORT}
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_DB=${PG_DBNAME}
+    networks:
+      - template_network
+    volumes:
+      - template_pg_data:/var/lib/postgresql/data/
+    restart: always
+
+  server: 
+    container_name: template_server
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+      - "2345:2345"
+    networks:
+      - template_network
+    depends_on:
+      - postgres_db
+    volumes:
+      - .:/app:rw,delegated
+    restart: always
+
+  pg_admin:
+    container_name: template_pg_admin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - "5050:80"
+    networks:
+      - template_network
+
+networks:
+  template_network:
+    name: template_network
+
+volumes:
+  template_pg_data:
